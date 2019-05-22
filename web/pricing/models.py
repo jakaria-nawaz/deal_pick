@@ -36,8 +36,16 @@ class Shop(BaseModelTitle):
 class Product(BaseModelTitle):
     shop = models.ForeignKey(Shop, on_delete=models.DO_NOTHING)
 
+    class Meta:
+        unique_together = (('title', 'shop'),)
+
 
 class Price(BaseModel):
     price = models.FloatField()
     currency = models.ForeignKey(Currency, null=True, on_delete=models.DO_NOTHING)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+
+
+class SearchQuery(BaseModelTitle):
+    product = models.ManyToManyField(Product)
+

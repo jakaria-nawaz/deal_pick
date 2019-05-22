@@ -1,5 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
+import os
+import sys
+from urllib import parse
+this_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(os.path.dirname(this_dir), 'web'))
+import django
+
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'web.settings'
+django.setup()
 
 
 search_domains = {
@@ -46,4 +56,6 @@ def query_maker(query):
 if __name__ == '__main__':
     query = input()
     query = query_maker(query)
-    get_price_title(query)
+    price_title = get_price_title(query)
+    for pt in price_title:
+        pass
