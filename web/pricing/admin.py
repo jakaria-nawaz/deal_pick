@@ -16,6 +16,16 @@ class CurrencyAdmin(admin.ModelAdmin):
     list_display = ['title']
 
 
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['title', 'shop']
+
+
+class PriceAdmin(admin.ModelAdmin):
+    list_display = ['product', 'price', 'created_at']
+
+
+admin.site.register(Price, PriceAdmin)
 admin.site.register(Shop, ShopAdmin)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(Currency, CurrencyAdmin)
 admin.site.register(Country, CountryAdmin)

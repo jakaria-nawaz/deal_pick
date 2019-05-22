@@ -5,12 +5,14 @@ import sys
 from urllib import parse
 this_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web'))
+sys.path.append(os.path.join(os.path.dirname(this_dir), 'web', 'pricing'))
 import django
 
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'web.settings'
 django.setup()
 
+from pricing.models import *
 
 search_domains = {
     'saturn': 'www.saturn.de/de/search.html'
@@ -43,7 +45,7 @@ def get_price_title(query):
         except:
             pass
 
-    return product_wrappers
+    return price_title
 
 
 def query_maker(query):
@@ -58,4 +60,15 @@ if __name__ == '__main__':
     query = query_maker(query)
     price_title = get_price_title(query)
     for pt in price_title:
-        pass
+        try:
+            product = Product.objects.get(title=pt[1])
+        except Product.DoesNotExist:
+            product = Product.objects.create(
+                title=pt[1],
+                shop=Shop.objects.get(title='Saturn'),
+            )
+        price_obj = Price.objects.create(
+            price=pt[0].split(',')[0],
+            currency=Currency.objects.get(title='Euro'),
+            product=product
+        )

@@ -22,15 +22,24 @@ class BaseModelTitle(BaseModel):
 class Currency(BaseModelTitle):
     pass
 
+    def __str__(self):
+        return self.title
+
 
 class Country(BaseModelTitle):
     pass
+
+    def __str__(self):
+        return self.title
 
 
 class Shop(BaseModelTitle):
     url = models.URLField()
     currency = models.ForeignKey(Currency, null=True, on_delete=models.DO_NOTHING)
     country = models.ForeignKey(Country, null=True, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.title
 
 
 class Product(BaseModelTitle):
@@ -39,11 +48,17 @@ class Product(BaseModelTitle):
     class Meta:
         unique_together = (('title', 'shop'),)
 
+    def __str__(self):
+        return self.title
+
 
 class Price(BaseModel):
     price = models.FloatField()
     currency = models.ForeignKey(Currency, null=True, on_delete=models.DO_NOTHING)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return self.product
 
 
 class SearchQuery(BaseModelTitle):
