@@ -3,16 +3,20 @@ import requests
 import os
 import sys
 from urllib import parse
+
+
+
 this_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web'))
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web', 'pricing'))
+
 import django
 
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'web.settings'
 django.setup()
 
-from pricing.models import *
+from pricing.models import Product, Price, Currency, Shop
 
 search_domains = {
     'saturn': 'www.saturn.de/de/search.html'
@@ -21,8 +25,9 @@ search_domains = {
 
 def get_price_title(query):
     price_title = []
+    search_page = 'http://www.saturn.de/de/search.html'
     response = requests.get(
-        'http://www.saturn.de/de/search.html',
+        search_page,
         params={
             'query': query,
             'searchProfile': 'onlineshop',
@@ -37,11 +42,12 @@ def get_price_title(query):
         try:
             content = wrapper.findAll('div', {'class': 'content'})[0]
             title = content.findAll('h2')[0].text
-            title = title.strip()
+            url = content.findAll('h2')[0].a.get('href')
+            url = parse.urljoin(search_page, url)
             price_wrappers = wrapper.findAll('div', {'class': 'price small'})
             price = price_wrappers[0].text
             print(title, price)
-            price_title.append((price, title))
+            price_title.append((price, title, url))
         except:
             pass
 
@@ -55,10 +61,8 @@ def query_maker(query):
     return param
 
 
-if __name__ == '__main__':
-    query = input()
-    query = query_maker(query)
-    price_title = get_price_title(query)
+def create_price_records(price_title):
+
     for pt in price_title:
         try:
             product = Product.objects.get(title=pt[1])
@@ -70,5 +74,14 @@ if __name__ == '__main__':
         price_obj = Price.objects.create(
             price=pt[0].split(',')[0],
             currency=Currency.objects.get(title='Euro'),
-            product=product
+            product=product,
+            url=pt[2]
         )
+
+
+if __name__ == '__main__':
+    print('enter the query')
+    query = input()
+    query = query_maker(query)
+    price_title = get_price_title(query)
+    create_price_records(price_title)

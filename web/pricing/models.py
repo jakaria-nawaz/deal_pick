@@ -56,9 +56,10 @@ class Price(BaseModel):
     price = models.FloatField()
     currency = models.ForeignKey(Currency, null=True, on_delete=models.DO_NOTHING)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    url = models.URLField(null=True)
 
     def __str__(self):
-        return self.product
+        return self.product.title
 
 
 class SearchQuery(BaseModelTitle):
