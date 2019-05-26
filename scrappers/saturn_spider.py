@@ -3,8 +3,8 @@ import requests
 import os
 import sys
 from urllib import parse
-
-
+import time
+from scrappers.utils import *
 
 this_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web'))
@@ -80,8 +80,11 @@ def create_price_records(price_title):
 
 
 if __name__ == '__main__':
-    print('enter the query')
-    query = input()
-    query = query_maker(query)
-    price_title = get_price_title(query)
-    create_price_records(price_title)
+    # print('enter the query')
+    # query = input()
+    products = get_products()
+    for product in products:
+        query = query_maker(product)
+        price_title = get_price_title(query)
+        create_price_records(price_title)
+        time.sleep(2)

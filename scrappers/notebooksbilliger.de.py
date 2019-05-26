@@ -19,13 +19,13 @@ django.setup()
 from pricing.models import Product, Price, Currency, Shop
 
 search_domains = {
-    'mediamarkt': 'https://www.mediamarkt.de/de/search.html'
+    'notebooksbilliger': 'https://www.notebooksbilliger.de'
 }
 
 
 def get_price_title(query):
     price_title = []
-    search_page = 'https://www.mediamarkt.de/de/search.html'
+    search_page = 'https://www.notebooksbilliger.de/produkte/'
     response = requests.get(
         search_page,
         params={

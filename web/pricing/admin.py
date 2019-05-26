@@ -22,6 +22,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class PriceAdmin(admin.ModelAdmin):
     list_display = ['product', 'price', 'created_at']
+    readonly_fields = ['product']
 
 
 admin.site.register(Price, PriceAdmin)
