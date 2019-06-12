@@ -44,6 +44,7 @@ class Shop(BaseModelTitle):
 
 class Product(BaseModelTitle):
     shop = models.ForeignKey(Shop, on_delete=models.DO_NOTHING)
+    image = models.URLField(null=True, blank=True)
 
     class Meta:
         unique_together = (('title', 'shop'),)

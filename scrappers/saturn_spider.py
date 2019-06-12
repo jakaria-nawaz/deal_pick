@@ -34,19 +34,18 @@ def get_price_title(query):
             'channel': 'sedede'
         }
     )
-    print(response.status_code)
+
     soup = BeautifulSoup(response.content, 'html.parser')
 
     product_wrappers = soup.findAll('div', {'class': 'product-wrapper'})
     for wrapper in product_wrappers:
         try:
             content = wrapper.findAll('div', {'class': 'content'})[0]
-            title = content.findAll('h2')[0].text
+            title = content.findAll('h2')[0].text.strip()
             url = content.findAll('h2')[0].a.get('href')
             url = parse.urljoin(search_page, url)
             price_wrappers = wrapper.findAll('div', {'class': 'price small'})
             price = price_wrappers[0].text
-            print(title, price)
             price_title.append((price, title, url))
         except:
             pass
@@ -70,6 +69,7 @@ def create_price_records(price_title):
             product = Product.objects.create(
                 title=pt[1],
                 shop=Shop.objects.get(title='Saturn'),
+                image=get_image_url(pt[2])
             )
         price_obj = Price.objects.create(
             price=pt[0].split(',')[0],
@@ -77,6 +77,16 @@ def create_price_records(price_title):
             product=product,
             url=pt[2]
         )
+        print("image", get_image_url(pt[2]))
+
+
+def get_image_url(url):
+    try:
+        soup = BeautifulSoup(requests.get(url).content, 'html.parser')
+        return soup.findAll("a", {"class": "zoom"})[0].get('href')
+    except:
+        print('failed to get img  url for ', url)
+        return ""
 
 
 if __name__ == '__main__':
