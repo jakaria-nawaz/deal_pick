@@ -19,6 +19,7 @@ class CurrencyAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['title', 'shop']
     readonly_fields = ['image']
+    list_filter = ('shop__title', )
 
 
 class PriceAdmin(admin.ModelAdmin):

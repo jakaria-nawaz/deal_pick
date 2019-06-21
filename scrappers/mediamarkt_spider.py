@@ -61,16 +61,27 @@ def query_maker(query):
     return param
 
 
-def create_price_records(price_title):
+def get_image_url(url):
+    try:
+        soup = BeautifulSoup(requests.get(url).content, 'html.parser')
+        return soup.findAll("div", {"class": "mms-zoom-image"})[0].find('img').get('src')
+    except:
+        print('failed to get img  url for ', url)
+        return ""
 
+
+def create_price_records(price_title):
+    shop = Shop.objects.get(title='mediamarkt')
     for pt in price_title:
         try:
-            product = Product.objects.get(title=pt[1])
+            product = Product.objects.get(title=pt[1], shop=shop)
         except Product.DoesNotExist:
             product = Product.objects.create(
                 title=pt[1],
-                shop=Shop.objects.get(title='Saturn'),
+                shop=shop,
+                image=get_image_url(pt[2])
             )
+            print('image', product.image)
         price_obj = Price.objects.create(
             price=pt[0].split(',')[0],
             currency=Currency.objects.get(title='Euro'),
