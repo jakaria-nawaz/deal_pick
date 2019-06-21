@@ -61,14 +61,14 @@ def query_maker(query):
 
 
 def create_price_records(price_title):
-
+    shop = Shop.objects.get(title='Saturn')
     for pt in price_title:
         try:
-            product = Product.objects.get(title=pt[1])
+            product = Product.objects.get(title=pt[1], shop=shop)
         except Product.DoesNotExist:
             product = Product.objects.create(
                 title=pt[1],
-                shop=Shop.objects.get(title='Saturn'),
+                shop=shop,
                 image=get_image_url(pt[2])
             )
         price_obj = Price.objects.create(
