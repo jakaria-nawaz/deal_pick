@@ -94,6 +94,7 @@ if __name__ == '__main__':
     from scrappers.utils import get_products
     products = get_products()
     for product in products:
+        print('-- product --', product)
         query = query_maker(product)
         price_title = get_price_title(query)
         create_price_records(price_title)

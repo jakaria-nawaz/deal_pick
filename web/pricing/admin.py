@@ -25,6 +25,8 @@ class ProductAdmin(admin.ModelAdmin):
 class PriceAdmin(admin.ModelAdmin):
     list_display = ['product', 'price', 'created_at']
     readonly_fields = ['product']
+    list_filter = ('product__shop__title',)
+    search_fields = ('product__title__contains', )
 
 
 admin.site.register(Price, PriceAdmin)

@@ -1,5 +1,6 @@
 consumer_electronics = (
     'ipad 2018',
+    'ipad',
     'iPhone XS',
     'iPhone XR',
     'iPhone 8',
