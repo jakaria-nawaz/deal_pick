@@ -24,6 +24,7 @@ search_domains = {
 
 
 def get_price_title(query):
+    print("query", query)
     price_title = []
     search_page = 'https://www.mediamarkt.de/de/search.html'
     response = requests.get(
@@ -32,7 +33,7 @@ def get_price_title(query):
             'query': query,
         }
     )
-    print(response.status_code)
+    print("status code for serach ", query, " was ", response.status_code)
     soup = BeautifulSoup(response.content, 'html.parser')
 
     product_wrappers = soup.findAll('a', {'class': 'mms-link mms-srp-product'})
@@ -44,7 +45,7 @@ def get_price_title(query):
             url = parse.urljoin(search_page, url)
             price_wrappers = wrapper.findAll('span', {'class': 'mms-price__price'})
             price = price_wrappers[0].text.split('.')[0]
-            print(title, price)
+            # print(title, price)
             price_title.append((price, title, url))
         except Exception as e:
             print(e)
@@ -55,10 +56,7 @@ def get_price_title(query):
 
 
 def query_maker(query):
-    param = ''
-    for keyword in query.split():
-        param += keyword
-    return param
+    return '+'.join(query.split())
 
 
 def get_image_url(url):
@@ -94,7 +92,7 @@ if __name__ == '__main__':
     from scrappers.utils import get_products
     products = get_products()
     for product in products:
-        print('-- product --', product)
+        print('-- request sent for product --', product)
         query = query_maker(product)
         price_title = get_price_title(query)
         create_price_records(price_title)

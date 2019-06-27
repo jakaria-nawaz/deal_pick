@@ -54,10 +54,7 @@ def get_price_title(query):
 
 
 def query_maker(query):
-    param = ''
-    for keyword in query.split():
-        param += keyword
-    return param
+    return '+'.join(query.split())
 
 
 def create_price_records(price_title):
