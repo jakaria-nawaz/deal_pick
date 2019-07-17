@@ -7,13 +7,11 @@ import sys
 from urllib import parse
 import time
 
-
 this_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web'))
 sys.path.append(os.path.join(os.path.dirname(this_dir), 'web', 'pricing'))
 
 import django
-
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'web.settings'
 django.setup()
@@ -23,6 +21,7 @@ from pricing.models import Product, Price, Currency, Shop
 search_domains = {
     'notebooksbilliger': 'https://www.notebooksbilliger.de'
 }
+
 
 def create_price_records(price_title):
     shop = Shop.objects.get(title='notebooksbilliger')
@@ -60,8 +59,9 @@ def get_price_title(query):
 
         # initialize the driver
         driver = webdriver.Chrome(chrome_options=options)
-        res = driver.get("https://www.notebooksbilliger.de/produkte/"+query)
-        wrappers = driver.find_elements_by_class_name('listing_main')[0].find_elements_by_css_selector(".mouseover.clearfix")
+        res = driver.get("https://www.notebooksbilliger.de/produkte/" + query)
+        wrappers = driver.find_elements_by_class_name('listing_main')[0].find_elements_by_css_selector(
+            ".mouseover.clearfix")
         price_title = []
         for wrapper in wrappers:
             title = wrapper.find_elements_by_class_name('listing_product_title')[0].text
@@ -90,6 +90,7 @@ def get_image_url(url):
 if __name__ == '__main__':
 
     from scrappers.utils import get_products
+
     products = get_products()
     for product in products:
         print('-- request sent for product --', product)
